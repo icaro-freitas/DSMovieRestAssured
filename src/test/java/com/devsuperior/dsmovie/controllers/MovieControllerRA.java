@@ -109,8 +109,7 @@ public class MovieControllerRA {
 		given().header("Content-type", "application/json").header("Authorization", "Bearer " + adminToken)
 				.body(newMovie).contentType(ContentType.JSON).accept(ContentType.JSON).when().post("/movies").then()
 				.statusCode(422)
-				.body("errors.message[1]", equalTo("Tamanho deve ser entre 5 e 80 caracteres"))	
-				.body("errors.message[0]", equalTo("Campo requerido"));		
+		        .body("errors.message", hasItems("Campo requerido", "Tamanho deve ser entre 5 e 80 caracteres"));	
 	}
 	
 	@Test
