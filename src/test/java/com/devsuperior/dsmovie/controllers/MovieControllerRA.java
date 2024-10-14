@@ -9,14 +9,22 @@ import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import io.restassured.http.ContentType;
+
 public class MovieControllerRA {
 	
 	private String movieTitle;
+	
+	private Long existingMovieId;
+
+	private Long nonExistingMovieId;
 	
 	
 	@BeforeEach
 	public void setUp() {
 		movieTitle = "Rogue";
+		existingMovieId = 1L;
+		nonExistingMovieId = 200L;
 	}
 	
 	@Test
@@ -35,11 +43,21 @@ public class MovieControllerRA {
 	}
 	
 	@Test
-	public void findByIdShouldReturnMovieWhenIdExists() {		
+	public void findByIdShouldReturnMovieWhenIdExists() {	
+		
+		given().get("/movies/{id}", existingMovieId).then().statusCode(200).body("id", is(1))
+				.body("title", equalTo("The Witcher"))
+				.body("image", equalTo(
+						"https://www.themoviedb.org/t/p/w533_and_h300_bestv2/jBJWaqoSCiARWtfV0GlqHrcdidd.jpg"))
+				.body("score", is(4.5F)).body("count", is(2));
 	}
 	
 	@Test
 	public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() {	
+		given()		
+		.get("/movies/{id}", nonExistingMovieId)
+		.then()
+		.statusCode(404);
 	}
 	
 	@Test
